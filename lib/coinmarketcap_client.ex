@@ -1,21 +1,4 @@
 defmodule CoinmarketcapClient do
-  @moduledoc """
-  Documentation for CoinmarketcapClient.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> CoinmarketcapClient.hello
-      :world
-
-  """
-  def hello do
-    :world
-  end
-
   use Tesla
 
   plug Tesla.Middleware.BaseUrl, "https://api.coinmarketcap.com/"
@@ -28,11 +11,9 @@ defmodule CoinmarketcapClient do
     get("/v1/global").body
   end
 
-  def ticker() do
-    get("/v1/ticker").body
+  def coins_summary(start, limit) do
+    get("/v1/ticker", query: [start: start, limit: limit]).body
   end
 
-  def ticker_sorted() do
-    Enum.sort(Enum.take(get("/v1/ticker").body, 10), &(Float.parse(Map.get(&1, "percent_change_24h")) >= Float.parse(Map.get(&2, "percent_change_24h"))))
-  end
+  def all_coins(), do: coins_summary(0, 0)
 end
